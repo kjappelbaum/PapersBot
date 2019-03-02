@@ -35,6 +35,19 @@ PapersBot tracks in a file named `posted.dat` (which it will create) the papers 
 
 `papersbot.py --do-not-tweet` will list the papers it _would_ tweet, without actually tweeting. But papers will still be recorded as tweeted in the `posted.dat` file.
 
+To set up a cronjob you can run
+
+```
+crontab -e 
+```
+
+and then set it e.g. to daily at midnight with 
+
+```
+0 0 * * * python <path_to_papersbot.py> 
+```
+
+
 ## Other features
 
 - Running `papersbot.py --top-tweets` will give you a list of the 5 top tweets, from the bot's 200 latest tweets. It sorts tweets by adding number of retweets and likes.
