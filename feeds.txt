@@ -56,8 +56,15 @@ http://feeds.nature.com/commsphys/rss/current
 http://feeds.nature.com/natrevchem/rss/current
 http://feeds.nature.com/natrevmats/rss/current
 http://feeds.nature.com/ncomms/rss/current
+http://feeds.nature.com/natmachintell/rss/current
 http://advances.sciencemag.org/rss/current.xml
 http://science.sciencemag.org/rss/express.xml
+http://feeds.nature.com/natrevchem/rss/current
+http://feeds.nature.com/npjqi/rss/current
+http://feeds.nature.com/npjquantmats/rss/current
+http://feeds.nature.com/npjcompumats/rss/current
+http://feeds.nature.com/sdata/rss/current
+http://feeds.nature.com/srep/rss/current
 # Wiley
 https://onlinelibrary.wiley.com/action/showFeed?jc=15475905&type=etoc&feed=rss
 https://onlinelibrary.wiley.com/action/showFeed?jc=15214095&type=etoc&feed=rss

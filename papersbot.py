@@ -26,14 +26,18 @@ import tweepy
 
 # This is the regular expression that selects the papers of interest
 regex = re.compile(r"""
-  (   \b(MOF|MOFs|COF|COFs|ZIF|ZIFs)\b
-    | metal.organic.framework
-    | covalent.organic.framework
-    | metal–organic.framework
-    | covalent–organic.framework
-    | imidazolate.framework
-    | porous.coordination.polymer
-    | framework.material
+  (   \b(ML)\b
+    | machine.learning
+    | deep.learning
+    | inverse.design
+    | neural.network
+    | qml
+    | big.data
+    | high.throughput
+    | data.mining
+    | materials.design
+    | computational.design
+    | data.driven
   )
   """, re.IGNORECASE | re.VERBOSE)
 
@@ -99,7 +103,7 @@ def journalHandle(url):
             return "ScienceMagazine"
         if "aip.scitation.org/doi/10.1063/" in url:
             return "AIP_Publishing"
-    except:
+    except Exception:
         return None
 
 
@@ -131,7 +135,7 @@ def downloadImage(url):
 
     try:
         img, _ = urllib.request.urlretrieve(url)
-    except:
+    except Exception:
         return None
     ext = imghdr.what(img)
     res = img + "." + ext
@@ -197,7 +201,7 @@ def readPosted():
     try:
         with open("posted.dat", "r") as f:
             return f.read().splitlines()
-    except:
+    except Exception:
         return []
 
 
