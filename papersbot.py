@@ -23,9 +23,9 @@ import bs4
 import feedparser
 import tweepy
 
-
 # This is the regular expression that selects the papers of interest
-regex = re.compile(r"""
+regex = re.compile(
+    r"""
   (   \b(ML)\b
     | machine.learning
     | deep.learning
@@ -57,23 +57,74 @@ def entryMatches(entry):
 
 
 acsTwitter = {
-    "acsaem": "acs_aem", "acsami": "acs_ami", "acsanm": "acs_anm", "acscatal": "ACSCatalysis",
-    "acscentsci": "ACSCentSci", "acsenergylett": "ACSEnergyLett", "acsnano": "acsnano", "acssuschemeng": "ACSSustainable",
-    "acs.chemrev": "ACSChemRev", "acs.chemmater": "ChemMater", "acs.cgd": "CGD_ACS", "acs.est": "EnvSciTech",
-    "acs.inorgchem": "InorgChem", "jacs": "J_A_C_S", "acs.jcim": "JCIM_ACS", "acs.jpcb": "JPhysChem", "acs.jpcc": "JPhysChem",
-    "acs.jpclett": "JPhysChem", "acs.langmuir": "ACS_Langmuir", "acs.nanolett": "NanoLetters"}
+    "acsaem": "acs_aem",
+    "acsami": "acs_ami",
+    "acsanm": "acs_anm",
+    "acscatal": "ACSCatalysis",
+    "acscentsci": "ACSCentSci",
+    "acsenergylett": "ACSEnergyLett",
+    "acsnano": "acsnano",
+    "acssuschemeng": "ACSSustainable",
+    "acs.chemrev": "ACSChemRev",
+    "acs.chemmater": "ChemMater",
+    "acs.cgd": "CGD_ACS",
+    "acs.est": "EnvSciTech",
+    "acs.inorgchem": "InorgChem",
+    "jacs": "J_A_C_S",
+    "acs.jcim": "JCIM_ACS",
+    "acs.jpcb": "JPhysChem",
+    "acs.jpcc": "JPhysChem",
+    "acs.jpclett": "JPhysChem",
+    "acs.langmuir": "ACS_Langmuir",
+    "acs.nanolett": "NanoLetters"
+}
 rscTwitter = {
-    "CY": "CatalysisSciTec", "CC": "ChemCommun", "SC": "ChemicalScience", "CS": "ChemSocRev", "CE": "CrystEngComm",
-    "DT": "DaltonTrans", "EE": "EES_journal", "EN": "EnvSciRSC", "FD": "Faraday_D", "GC": "green_rsc", "TA": "JMaterChem",
-    "TB": "JMaterChem", "TC": "JMaterChem", "NR": "Nanoscale_RSC", "CP": "PCCP", "SM": "SoftMatter"}
+    "CY": "CatalysisSciTec",
+    "CC": "ChemCommun",
+    "SC": "ChemicalScience",
+    "CS": "ChemSocRev",
+    "CE": "CrystEngComm",
+    "DT": "DaltonTrans",
+    "EE": "EES_journal",
+    "EN": "EnvSciRSC",
+    "FD": "Faraday_D",
+    "GC": "green_rsc",
+    "TA": "JMaterChem",
+    "TB": "JMaterChem",
+    "TC": "JMaterChem",
+    "NR": "Nanoscale_RSC",
+    "CP": "PCCP",
+    "SM": "SoftMatter"
+}
 natureTwitter = {
-    "s41563": "NatureMaterials", "s41557": "NatureChemistry", "s42004": "CommsChem", "s41467": "NatureComms",
-    "s41929": "NatureCatalysis", "s41560": "NatureEnergyJnl", "s41565": "NatureNano", "s41567": "NaturePhysics",
-    "s42005": "CommsPhys", "s41570": "NatRevChem", "s41578": "NatRevMater"}
+    "s41563": "NatureMaterials",
+    "s41557": "NatureChemistry",
+    "s42004": "CommsChem",
+    "s41467": "NatureComms",
+    "s41929": "NatureCatalysis",
+    "s41560": "NatureEnergyJnl",
+    "s41565": "NatureNano",
+    "s41567": "NaturePhysics",
+    "s42005": "CommsPhys",
+    "s41570": "NatRevChem",
+    "s41578": "NatRevMater"
+}
 wileyTwitter = {
-    "adma": "AdvMater", "adfm": "AdvFunctMater", "anie": "angew_chem", "chem": "ChemEurJ", "asia": "ChemAsianJ",
-    "cplu": "ChemPlusChem", "cphc": "ChemPhysChem", "slct": "ChemistrySelect"}
-apsTwitter = {"PhysRevLett": "PhysRevLett", "PhysRevX": "PhysRevX", "PhysRevB": "PhysRevB", "PhysRevMaterials": "PhysRevMater"}
+    "adma": "AdvMater",
+    "adfm": "AdvFunctMater",
+    "anie": "angew_chem",
+    "chem": "ChemEurJ",
+    "asia": "ChemAsianJ",
+    "cplu": "ChemPlusChem",
+    "cphc": "ChemPhysChem",
+    "slct": "ChemistrySelect"
+}
+apsTwitter = {
+    "PhysRevLett": "PhysRevLett",
+    "PhysRevX": "PhysRevX",
+    "PhysRevB": "PhysRevB",
+    "PhysRevMaterials": "PhysRevMater"
+}
 
 
 # From a given URL, figure out the corresponding journal Twitter handle
@@ -218,7 +269,7 @@ class PapersBot:
         try:
             with open("config.yml", "r") as f:
                 config = yaml.safe_load(f)
-        except:
+        except Exception:
             config = {}
         self.throttle = config.get("throttle", 0)
         self.wait_time = config.get("wait_time", 5)
@@ -235,7 +286,8 @@ class PapersBot:
         # Determine maximum tweet length
         if doTweet:
             twconfig = getTwitterConfig(self.api)
-            urllen = max(twconfig["short_url_length"], twconfig["short_url_length_https"])
+            urllen = max(twconfig["short_url_length"],
+                         twconfig["short_url_length_https"])
             imglen = twconfig["characters_reserved_per_media"]
         else:
             urllen = 23
@@ -243,19 +295,19 @@ class PapersBot:
         self.maxlength = 280 - (urllen + 1) - imglen
 
         # Start-up banner
-        print(f"This is PapersBot running at {time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+        print(
+            f"This is PapersBot running at {time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
+        )
         if self.api:
             last = self.api.user_timeline(count=1)[0].created_at
             print(f"Last tweet was posted at {last} (UTC)")
         print(f"Feed list has {len(self.feeds)} feeds\n")
-
 
     # Add to tweets posted
     def addToPosted(self, url):
         with open("posted.dat", "a+") as f:
             print(url, file=f)
         self.posted.append(url)
-
 
     # Send a tweet for a given feed entry
     def sendTweet(self, entry):
@@ -295,7 +347,6 @@ class PapersBot:
         if self.api:
             time.sleep(self.wait_time)
 
-
     # Main function, iterating over feeds and posting new items
     def run(self):
         for feed in self.feeds:
@@ -310,23 +361,26 @@ class PapersBot:
                         self.sendTweet(entry)
                         # Bail out if we have reached max number of tweets
                         if self.throttle > 0 and self.n_tweeted >= self.throttle:
-                            print(f"Max number of papers met ({self.throttle}), stopping now")
+                            print(
+                                f"Max number of papers met ({self.throttle}), stopping now"
+                            )
                             return
-
 
     # Print statistics of a given run
     def printStats(self):
         print(f"Number of relevant papers: {self.n_seen}")
         print(f"Number of papers tweeted: {self.n_tweeted}")
 
-
     # Print out the n top tweets (most liked and RT'ed)
     def printTopTweets(self, count=20):
         tweets = self.api.user_timeline(count=200)
         oldest = tweets[-1].created_at
-        print(f"Top {count} recent tweets, by number of RT and likes, since {oldest}:\n")
+        print(
+            f"Top {count} recent tweets, by number of RT and likes, since {oldest}:\n"
+        )
 
-        tweets = [(t.retweet_count + t.favorite_count, t.id, t) for t in tweets]
+        tweets = [(t.retweet_count + t.favorite_count, t.id, t)
+                  for t in tweets]
         tweets.sort(reverse=True)
         for _, _, t in tweets[0:count]:
             url = f"https://twitter.com/{t.user.screen_name}/status/{t.id}"
@@ -351,6 +405,8 @@ def main():
     if "--top-tweets" in sys.argv:
         bot.printTopTweets()
         sys.exit(0)
+
+
 
     bot.run()
     bot.printStats()

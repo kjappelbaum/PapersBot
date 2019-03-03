@@ -92,6 +92,9 @@ https://aip.scitation.org/action/showFeed?type=etoc&feed=rss&jc=jap
 https://aip.scitation.org/action/showFeed?type=etoc&feed=rss&jc=jcp
 http://feeds.aps.org/rss/recent/prl.xml
 http://feeds.aps.org/rss/recent/prx.xml
+http://feeds.aps.org/rss/recent/pra.xml
+http://feeds.aps.org/rss/recent/pre.xml
+http://feeds.aps.org/rss/recent/rmp.xml
 http://feeds.aps.org/rss/recent/prb.xml
 http://feeds.aps.org/rss/recent/prmaterials.xml
 # Preprints
