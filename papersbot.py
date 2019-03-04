@@ -24,10 +24,10 @@ import feedparser
 import tweepy
 
 # This is the regular expression that selects the papers of interest
+# Exclude bio stuff, ML also used in surface science, so we also include this
 regex = re.compile(
     r"""
-  (   \b(ML)\b
-    | machine.learning
+     (?!bio|cell|clinic|clinical|cells|biological|histological|medicince)( machine.learning
     | deep.learning
     | inverse.design
     | neural.network
