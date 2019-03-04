@@ -236,13 +236,13 @@ def readFeedsList():
         feeds = [s.partition("#")[0].strip() for s in f]
         return [s for s in feeds if s]
 
-
 # Remove unwanted text some journals insert into the feeds
 def cleanText(s):
     # Annoying ASAP tags
     s = s.replace("[ASAP]", "")
     # Some feeds have LF characeters
     s = s.replace("\x0A", "")
+    s = re.sub(r"\(arXiv.+\)", '', s)
     # Remove multiple spaces, leading and trailing space
     return re.sub("\\s\\s+", " ", s).strip()
 
