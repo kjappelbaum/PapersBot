@@ -12,7 +12,7 @@
 import imghdr
 import json
 import os
-import re
+import regex as re
 import sys
 import tempfile
 import time
@@ -26,17 +26,13 @@ import tweepy
 # This is the regular expression that selects the papers of interest
 # Exclude bio stuff, ML also used in surface science, so we also include this
 regex = re.compile(
-    r"""
-     (?!bio|cell|clinic|clinical|cells|biological|histological|medicince)( machine.learning
+        r"""(?!(cell|clinic|clinical|bio|histological|medic|bacterial|organism|metabolic|gene|injury|living))(
+    machine.learning 
     | deep.learning
-    | inverse.design
     | neural.network
     | qml
     | big.data
-    | high.throughput
     | data.mining
-    | materials.design
-    | computational.design
     | data.driven
   )
   """, re.IGNORECASE | re.VERBOSE)
@@ -236,6 +232,7 @@ def readFeedsList():
         feeds = [s.partition("#")[0].strip() for s in f]
         return [s for s in feeds if s]
 
+
 # Remove unwanted text some journals insert into the feeds
 def cleanText(s):
     # Annoying ASAP tags
@@ -322,6 +319,12 @@ class PapersBot:
 
         tweet_body = title[:length] + " " + url
 
+        # URL may be malformed
+        if not (url[:8] == "https://" or url[:7] == "http://"):
+            print(f"INVALID URL: {tweet_body}\n")
+            self.addToPosted(entry.id)
+            return
+
         # Some URLs may match our blacklist
         if self.blacklist and self.blacklist.search(url):
             print(f"BLACKLISTED: {tweet_body}\n")
@@ -405,8 +408,6 @@ def main():
     if "--top-tweets" in sys.argv:
         bot.printTopTweets()
         sys.exit(0)
-
-
 
     bot.run()
     bot.printStats()
