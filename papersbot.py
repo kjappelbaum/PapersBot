@@ -12,7 +12,8 @@
 import imghdr
 import json
 import os
-import regex as re
+import random
+import re
 import sys
 import tempfile
 import time
@@ -40,7 +41,7 @@ regex = re.compile(
 # We select entries based on title or summary (abstract, for some feeds)
 def entryMatches(entry):
     # Malformed entry
-    if 'title' not in entry:
+    if "title" not in entry:
         return False
 
     if regex.search(entry.title):
@@ -155,13 +156,15 @@ def journalHandle(url):
 
 # Find the URL for an image associated with the entry
 def findImage(entry):
-    if 'description' not in entry:
+    if "description" not in entry:
         return
 
     soup = bs4.BeautifulSoup(entry.description, "html.parser")
     img = soup.find("img")
     if img:
         img = img["src"]
+        if len(img) == 0:
+            return
         # If address is relative, append root URL
         if img[0] == "/":
             p = urllib.parse.urlparse(entry.id)
@@ -269,9 +272,13 @@ class PapersBot:
             config = {}
         self.throttle = config.get("throttle", 0)
         self.wait_time = config.get("wait_time", 5)
-        self.blacklist = config.get("blacklist", "").strip()
-        self.blacklist = re.compile(self.blacklist) if self.blacklist else None
-        self.handles = config.get("handles", True)
+        self.shuffle_feeds = config.get("shuffle_feeds", True)
+        self.blacklist = config.get("blacklist", [])
+        self.blacklist = [re.compile(s) for s in self.blacklist]
+
+        # Shuffle feeds list
+        if self.shuffle_feeds:
+            random.shuffle(self.feeds)
 
         # Connect to Twitter, unless requested not to
         if doTweet:
@@ -308,13 +315,18 @@ class PapersBot:
     # Send a tweet for a given feed entry
     def sendTweet(self, entry):
         title = cleanText(htmlToText(entry.title))
-        url = entry.id
         length = self.maxlength
 
-        handle = journalHandle(url)
-        if self.handles and handle:
-            length -= len(handle) + 2
-            url = f"@{handle} {url}"
+        # Usually the ID is the canonical URL, but not always
+        if entry.id[:8] == "https://" or entry.id[:7] == "http://":
+            url = entry.id
+        else:
+            url = entry.link
+
+        # URL may be malformed
+        if not (url[:8] == "https://" or url[:7] == "http://"):
+            print(f"INVALID URL: {url}\n")
+            return
 
         tweet_body = title[:length] + " " + url
 
@@ -341,7 +353,14 @@ class PapersBot:
 
         print(f"TWEET: {tweet_body}\n")
         if self.api:
-            self.api.update_status(tweet_body, media_ids=media)
+            try:
+                self.api.update_status(tweet_body, media_ids=media)
+            except tweepy.error.TweepError as e:
+                if e.api_code == 187:
+                    print("ERROR: Tweet refused as duplicate\n")
+                else:
+                    print(f"ERROR: Tweet refused, {e.reason}\n")
+                    sys.exit(1)
 
         self.addToPosted(entry.id)
         self.n_tweeted += 1
@@ -412,5 +431,5 @@ def main():
     bot.printStats()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
