@@ -103,3 +103,6 @@ http://export.arxiv.org/rss/cond-mat.str-el
 http://export.arxiv.org/rss/cond-mat.mtrl-sci
 http://export.arxiv.org/rss/physics.app-ph
 http://export.arxiv.org/rss/physics.chem-ph
+https://www.cell.com/chem/inpress.rss
+https://www.cell.com/matter/inpress.rss
+https://www.cell.com/cell-reports-physical-science/inpress.rss

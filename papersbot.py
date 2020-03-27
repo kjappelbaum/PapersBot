@@ -26,7 +26,7 @@ import tweepy
 # This is the regular expression that selects the papers of interest
 # Exclude bio stuff, ML also used in surface science, so we also include this
 regex = re.compile(
-    r"""^(?!.*(cell|clinic|bio|histological|medic|bacterial|organ|metabolic|gene|injury|living|ontolog|tumor|cancer|brain)).*(
+    r"""^(?!.*(cell|clinic|cardiac|bio|histological|medic|bacterial|tomography|neuro|organ|metabolic|gene|injury|living|ontolog|tumor|cancer|brain|vascular)).*(
     machine.learning 
     | deep.learning
     | neural.network
